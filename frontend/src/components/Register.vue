@@ -178,6 +178,19 @@ export default {
   min-height: calc(100vh - 120px);
   padding: 20px;
 }
+.success-message {
+  margin-top: 20px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background-color: #d4edda; /* verde claro */
+  color: #155724; /* verde escuro */
+  border: 1px solid #c3e6cb;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
 
 .register-box {
   width: 100%;
