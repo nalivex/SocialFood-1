@@ -2,6 +2,7 @@ const { v4: uuidv4 } = require("uuid");
 const jwt = require("jsonwebtoken");
 const userSchema = require("../schemas/userSchema");
 const bcrypt = require("bcryptjs");
+const db = require("../db/config");
 const {
   createTable,
   checkRecordExists,
@@ -86,8 +87,19 @@ const logout = async (req, res) => {
   res.status(200).json({ message: "Logout successful" });
 };
 
+const getAllUsers = async (req, res) => {
+  try {
+    const [rows] = await require("mysql2/promise").createPool(db).query("SELECT userId, name, email FROM users");
+    res.status(200).json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
 module.exports = {
   register,
   login,
   logout,
+  getAllUsers
 };
