@@ -144,22 +144,22 @@ export default {
       }
 
       try {
-        const res = await axios.post("http://localhost:3000/api/register", {
-          nome: this.nome,
+        const res = await axios.post("http://localhost:3000/register", {
+          name: this.nome,
           email: this.email,
-          senha: this.senha,
+          password: this.senha,
         });
 
         this.sucesso = "Cadastro realizado com sucesso! Redirecionando...";
         // Opcional: login automático após cadastro
-        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("token", res.data.access_token);
         // Redireciona após 2 segundos
         setTimeout(() => {
           this.$router.push("/perfil");
         }, 2000);
       } catch (err) {
         this.erro =
-          err.response?.data?.message ||
+          err.response?.data?.error ||
           "Ocorreu um erro ao cadastrar. Por favor, tente novamente.";
       } finally {
         this.loading = false;

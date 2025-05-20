@@ -1,27 +1,22 @@
-const mysql = require("mysql");
+// db/db.js
+const mysql = require("mysql2/promise"); // mysql2 com promise
 const config = require("./config");
 const userSchema = require("../schemas/userSchema");
 
+const pool = mysql.createPool(config);
 
-
-const connectDB = async () => {
-  const pool = mysql.createPool(config);
-
-  pool.getConnection((err, connection) => {
-    if (err) {
-      console.log({ error: err.message });
-    }
-
+async function connectDB() {
+  try {
+    const connection = await pool.getConnection();
     console.log("Connected to MySQL database");
-    connection.query(userSchema, (err, results) => {
-      if (err) {
-        console.error("Erro ao criar a tabela 'users':", err.message);
-      } else {
-        console.log("Tabela 'users' verificada/criada com sucesso.");
-      }
-      connection.release();
-  });
-});
-};
 
-module.exports = connectDB;
+    await connection.query(userSchema);
+    console.log("Tabela 'users' verificada/criada com sucesso.");
+
+    connection.release();
+  } catch (err) {
+    console.error("Erro ao conectar/criar tabela:", err.message);
+  }
+}
+
+module.exports = { pool, connectDB, };

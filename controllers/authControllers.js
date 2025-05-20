@@ -36,7 +36,8 @@ const register = async (req, res) => {
       res.status(409).json({ error: "Email already exists" });
     } else {
       await insertRecord("users", user);
-      res.status(201).json({ message: "User created successfully!" });
+      const token = generateAccessToken(user.userId);
+      res.status(201).json({ message: "User created successfully!", access_token: token });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });

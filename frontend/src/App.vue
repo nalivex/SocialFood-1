@@ -89,11 +89,8 @@ export default {
   color: #fff;
   padding: 10px 0;
   text-align: center;
-  align-items: center;
   width: 100%;
-  position: fixed;
-  bottom: 0;
-  left: 0;
+  margin-top: auto;
 }
 
 @media (max-width: 768px) {

@@ -82,16 +82,16 @@ export default {
       this.erro = "";
 
       try {
-        const res = await axios.post("http://localhost:3000/api/login", {
+        const res = await axios.post("http://localhost:3000/login", {
           email: this.email,
-          senha: this.senha,
+          password: this.senha,
         });
 
-        localStorage.setItem("token", res.data.token);
-        this.$router.push("/perfil");
+        localStorage.setItem("token", res.data.access_token);
+        this.$router.push("/home");
       } catch (err) {
         this.erro =
-          err.response?.data?.message ||
+          err.response?.data?.error ||
           "Email ou senha inválidos. Por favor, tente novamente.";
       } finally {
         this.loading = false;

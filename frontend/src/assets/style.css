@@ -64,18 +64,16 @@ a:hover {
   text-align: center;
 }
 
-.success-message {
-  @extend .error-message;
-  color: #10b981;
-  background-color: #d1fae5;
-  border-color: #6ee7b7;
-}
-
-.warning-message {
-  @extend .error-message;
-  color: #f59e0b;
-  background-color: #fef3c7;
-  border-color: #fcd34d;
+.message-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 1rem 0;
+  padding: 12px 16px;
+  font-size: 14px;
+  border-radius: 6px;
+  text-align: center;
 }
 
 .text-center {
