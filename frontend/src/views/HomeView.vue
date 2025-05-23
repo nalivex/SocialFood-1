@@ -19,33 +19,33 @@
         <h2>Últimos Pratos Compartilhados</h2>
         <div class="card-container">
           <div class="card">
-            <img src="@/assets/banner-gastronomia.jpg" alt="Prato 1" />
+            <img src="@/assets/img1.jpg" alt="Prato 1" />
             <h3>Risoto de Cogumelos</h3>
             <p>Postado por @ana.gastronomia</p>
           </div>
           <div class="card">
-            <img src="@/assets/banner-gastronomia.jpg" alt="Prato 2" />
+            <img src="@/assets/img2.jpg" alt="Prato 2" />
             <h3>Tacos Mexicanos</h3>
             <p>Postado por @luiz_chef</p>
           </div>
           <div class="card">
-            <img src="@/assets/banner-gastronomia.jpg" alt="Prato 2" />
-            <h3>Tacos Mexicanos</h3>
-            <p>Postado por @luiz_chef</p>
+            <img src="@/assets/img3.jpg" alt="Prato 2" />
+            <h3>Carbonara</h3>
+            <p>Postado por @bottega_restaurante</p>
           </div>
           <div class="card">
-            <img src="@/assets/banner-gastronomia.jpg" alt="Prato 2" />
-            <h3>Tacos Mexicanos</h3>
-            <p>Postado por @luiz_chef</p>
+            <img src="@/assets/img4.jpg" alt="Prato 2" />
+            <h3>Yakisoba</h3>
+            <p>Postado por @chef_helena</p>
           </div>
           <div class="card">
-            <img src="@/assets/banner-gastronomia.jpg" alt="Prato 2" />
-            <h3>Tacos Mexicanos</h3>
-            <p>Postado por @luiz_chef</p>
+            <img src="@/assets/img5.jpg" alt="Prato 2" />
+            <h3>Hamburguer Artesanal</h3>
+            <p>Postado por @pede_burguer</p>
           </div>
           <div class="card">
-            <img src="@/assets/banner-gastronomia.jpg" alt="Prato 2" />
-            <h3>Tacos Mexicanos</h3>
+            <img src="@/assets/img6.jpg" alt="Prato 2" />
+            <h3>Combinado de Sushi</h3>
             <p>Postado por @luiz_chef</p>
           </div>
           <!-- Adicione mais cards -->

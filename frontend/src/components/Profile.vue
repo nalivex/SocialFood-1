@@ -1,12 +1,20 @@
 <template>
   <div class="perfil-container">
+    <router-link to="/home" class="btn-voltar">← Voltar</router-link>
     <header class="perfil-header">
-      <div class="avatar">{{ usuario.name.charAt(0).toUpperCase() }}</div>
+      <div class="avatar">
+        {{ (usuario.name || "").charAt(0).toUpperCase() }}
+      </div>
       <div class="perfil-info">
         <div class="top-info">
           <h2 class="username">{{ usuario.name }}</h2>
-          <button class="edit-btn" @click="editarPerfil">Editar Perfil</button>
+          <button class="edit-btn" @click="modoEdicao = !modoEdicao">
+            Editar Perfil
+          </button>
           <button class="logout-btn" @click="logout">Sair</button>
+          <button class="delete-btn" @click="deletarPerfil">
+            Deletar Conta
+          </button>
         </div>
         <div class="stats">
           <span
@@ -17,6 +25,18 @@
         </div>
       </div>
     </header>
+    <div v-if="modoEdicao" class="edit-form">
+      <input type="text" v-model="usuario.name" placeholder="Novo nome" />
+      <input type="email" v-model="usuario.email" placeholder="Novo email" />
+      <input
+        type="password"
+        v-model="usuario.senha"
+        placeholder="Nova senha (opcional)"
+      />
+      <button class="save-btn" @click="atualizarPerfil">Salvar</button>
+      <button class="save-btn" @click="modoEdicao = false">Cancelar</button>
+      <p v-if="mensagem">{{ mensagem }}</p>
+    </div>
 
     <main class="posts-grid">
       <div v-for="post in posts" :key="post.id" class="post-thumb">
@@ -28,8 +48,9 @@
 
 <script>
 import axios from "axios";
-import imagem from "@/assets/banner-gastronomia.jpg";
-
+import img1 from "@/assets/img1.jpg";
+import img2 from "@/assets/img2.jpg";
+import img3 from "@/assets/img4.jpg";
 export default {
   name: "ProfileView",
   data() {
@@ -37,25 +58,27 @@ export default {
       usuario: {
         name: "",
         email: "",
+        senha: "",
       },
+      modoEdicao: false,
+      mensagem: "",
       posts: [
         {
           id: 1,
           titulo: "Post 1",
-          imagem: imagem,
+          imagem: img1,
         },
         {
           id: 2,
           titulo: "Post 2",
-          imagem: imagem,
+          imagem: img2,
         },
         {
           id: 3,
           titulo: "Post 3",
-          imagem: imagem,
+          imagem: img3,
         },
       ],
-      mensagem: "",
     };
   },
   mounted() {
@@ -70,7 +93,8 @@ export default {
             Authorization: `Bearer ${token}`,
           },
         });
-        this.usuario = res.data;
+        this.usuario.name = res.data.name;
+        this.usuario.email = res.data.email;
       } catch (erro) {
         console.error("Erro ao carregar perfil:", erro);
       }
@@ -78,12 +102,19 @@ export default {
     async atualizarPerfil() {
       try {
         const token = localStorage.getItem("token");
-        await axios.put("http://localhost:3000/api/user", this.usuario, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const payload = {
+          name: this.usuario.name,
+          email: this.usuario.email,
+        };
+        if (this.usuario.senha) payload.password = this.usuario.senha;
+        console.log("Payload enviado:", payload);
+        await axios.put("/api/user", payload, {
+          headers: { Authorization: `Bearer ${token}` },
         });
+
         this.mensagem = "Perfil atualizado com sucesso!";
+        this.usuario.senha = "";
+        this.modoEdicao = false;
       } catch (erro) {
         console.error("Erro ao atualizar perfil:", erro);
         this.mensagem = "Erro ao atualizar.";
@@ -94,10 +125,8 @@ export default {
 
       try {
         const token = localStorage.getItem("token");
-        await axios.delete("http://localhost:3000/api/user", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        await axios.delete("/api/user", {
+          headers: { Authorization: `Bearer ${token}` },
         });
         this.mensagem = "Conta deletada. Redirecionando...";
         localStorage.removeItem("token");
@@ -106,6 +135,10 @@ export default {
         console.error("Erro ao deletar perfil:", erro);
         this.mensagem = "Erro ao deletar conta.";
       }
+    },
+    logout() {
+      localStorage.removeItem("token");
+      this.$router.push("/login");
     },
   },
 };
@@ -129,7 +162,7 @@ export default {
 .avatar {
   width: 80px;
   height: 80px;
-  background-color: #bbb;
+  background-color: #036f7e;
   border-radius: 50%;
   color: white;
   font-weight: bold;
@@ -157,7 +190,8 @@ export default {
 }
 
 .edit-btn,
-.logout-btn {
+.logout-btn,
+.delete-btn {
   background-color: transparent;
   border: 1px solid #dbdbdb;
   border-radius: 4px;
@@ -183,5 +217,55 @@ export default {
   width: 100%;
   height: 200px;
   object-fit: cover;
+}
+.edit-form {
+  background-color: #f9f9f9;
+  border: 1px solid #dbdbdb;
+  padding: 24px;
+  border-radius: 8px;
+  margin-top: 20px;
+  max-width: 500px;
+}
+
+.edit-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
+}
+
+.edit-form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.edit-form button {
+  background-color: #3897f0;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+.edit-form button.cancelar {
+  background-color: #aaa;
+}
+.btn-voltar {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: #036f7e;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-voltar:hover {
+  text-decoration: underline;
 }
 </style>

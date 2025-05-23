@@ -4,8 +4,10 @@ import Register from "../components/Register.vue";
 import Start from "../views/HomeView.vue";
 import Home from "../components/Home.vue";
 import Profile from "../components/Profile.vue";
+import UserProfile from "../components/UserProfile.vue";
 
 const routes = [
+  { path: "/user/:id", component: UserProfile },
   { path: "/profile", component: Profile },
   { path: "/home", component: Home },
   { path: "/", component: Start },
