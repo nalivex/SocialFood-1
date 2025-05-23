@@ -127,14 +127,14 @@ export default {
 
 .username {
   font-size: 20px;
-  color: #262626;
+  color: white;
 }
 
 .stats {
   display: flex;
   gap: 16px;
   font-size: 14px;
-  color: #262626;
+  color: white;
 }
 
 .posts-grid {

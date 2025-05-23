@@ -186,14 +186,15 @@ export default {
 
 .username {
   font-size: 20px;
-  color: #262626;
+  color: white;
 }
 
 .edit-btn,
 .logout-btn,
 .delete-btn {
-  background-color: transparent;
+  background-color: #df4652;
   border: 1px solid #dbdbdb;
+  color: white;
   border-radius: 4px;
   padding: 6px 12px;
   font-size: 14px;
@@ -204,7 +205,7 @@ export default {
   display: flex;
   gap: 16px;
   font-size: 14px;
-  color: #262626;
+  color: white;
 }
 
 .posts-grid {
