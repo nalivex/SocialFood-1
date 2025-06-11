@@ -5,7 +5,7 @@ const carSchema = `
     model VARCHAR(100) NOT NULL,
     year INT NOT NULL,
     license_plate VARCHAR(20) NOT NULL UNIQUE,
-    status ENUM('available', 'unavailable', 'maintenance') DEFAULT 'available',
+    is_active BOOLEAN DEFAULT TRUE,
     daily_price DECIMAL(10,2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
