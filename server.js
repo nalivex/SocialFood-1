@@ -5,6 +5,7 @@ const cors = require("cors");
 const { pool, connectDB } = require("./db/db");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
+const carRoutes = require("./routes/carRoutes");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/", authRoutes);
 app.use("/", userRoutes);
+app.use("/", carRoutes);
 
 
 async function startServer() {

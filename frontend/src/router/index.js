@@ -4,6 +4,7 @@ import Register from "../components/Register.vue";
 import Start from "../views/HomeView.vue";
 import Home from "../components/Home.vue";
 import Profile from "../components/Profile.vue";
+import CarDetail from "@/components/carDetail.vue";
 
 const routes = [
   { path: "/profile", component: Profile },
@@ -12,6 +13,7 @@ const routes = [
   { path: "/login", component: Login },
   { path: "/register", component: Register },
   { path: "/:pathMatch(.*)*", redirect: "/login" },
+  { path: "/car/:id", component: CarDetail, name: "carDetail" },
 ];
 
 const router = createRouter({

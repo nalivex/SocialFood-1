@@ -1,30 +1,34 @@
-// db/db.js
-const mysql = require("mysql2/promise"); // mysql2 com promise
+const mysql = require("mysql2/promise");
 const config = require("./config");
+
 const userSchema = require("../schemas/userSchema");
 const carSchema = require("../schemas/carSchema");
 const bookingSchema = require("../schemas/bookingSchema");
 
+const seedCars = require("./seeders/seedCars"); // << Importa o seeder
+
 const pool = mysql.createPool(config);
+
+async function ensureTable(connection, schema, tableName) {
+  await connection.query(schema);
+  console.log(`✅ Tabela '${tableName}' verificada/criada.`);
+}
 
 async function connectDB() {
   try {
     const connection = await pool.getConnection();
-    console.log("Connected to MySQL database");
+    console.log("🟢 Conectado ao MySQL");
 
-    await connection.query(userSchema);
-    console.log("Tabela 'users' verificada/criada com sucesso.");
+    await ensureTable(connection, userSchema, "users");
+    await ensureTable(connection, carSchema, "cars");
+    await ensureTable(connection, bookingSchema, "bookings");
 
-    await connection.query(carSchema);
-    console.log("Tabela 'cars' verificada/criada com sucesso.");
-
-    await connection.query(bookingSchema);
-    console.log("Tabela 'bookings' verificada/criada com sucesso.");
+    await seedCars(connection); // << Usa o seeder separado
 
     connection.release();
   } catch (err) {
-    console.error("Erro ao conectar/criar tabela:", err.message);
+    console.error("❌ Erro na conexão/criação:", err.message);
   }
 }
 
-module.exports = { pool, connectDB, };
+module.exports = { pool, connectDB };
