@@ -1,4 +1,3 @@
-// bookingSchema.js
 const bookingSchema = `
   CREATE TABLE IF NOT EXISTS bookings (
     bookingId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

@@ -5,11 +5,11 @@
 
     <footer>
       <div class="footer-column">
-        <h3>Noshster</h3>
-        <p>Conectando apaixonados por comida ao redor do mundo.</p>
+        <h3>DriveCar</h3>
+        <p>Facilitando as suas viagens.</p>
       </div>
       <div class="footer-bottom">
-        © 2025 Noshster. Todos os direitos reservados.
+        © 2025 DriveCar. Todos os direitos reservados.
       </div>
     </footer>
   </div>
@@ -21,6 +21,4 @@ export default {
 };
 </script>
 
-<style>
-/* (mantenha seus estilos aqui, exatamente como estavam antes) */
-</style>
+<style></style>

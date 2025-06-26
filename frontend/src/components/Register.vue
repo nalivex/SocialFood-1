@@ -182,7 +182,7 @@ export default {
 .input-group input:focus {
   border-color: #0e4079;
   outline: none;
-  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.2);
+  box-shadow: 0 0 0 3px rgba(57, 126, 230, 0.144);
 }
 
 .password-wrapper {

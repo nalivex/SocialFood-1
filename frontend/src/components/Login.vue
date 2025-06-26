@@ -114,7 +114,7 @@ export default {
 .login-header h2 {
   margin: 0 0 8px;
   font-size: 28px;
-  color: #e63946;
+  color: #0e4079;
 }
 
 .login-header p {
@@ -150,9 +150,9 @@ export default {
 }
 
 .input-group input:focus {
-  border-color: #e63946;
+  border-color: #0e4079;
   outline: none;
-  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.2);
+  box-shadow: 0 0 0 3px rgba(57, 126, 230, 0.144);
 }
 
 .password-wrapper {
@@ -183,12 +183,12 @@ export default {
 }
 
 .forgot-link {
-  color: #e63946;
+  color: #0e4079;
   text-decoration: none;
 }
 
 .submit-btn {
-  background-color: #e63946;
+  background-color: #0e4079;
   color: white;
   padding: 12px;
   border: none;
@@ -200,7 +200,7 @@ export default {
 }
 
 .submit-btn:hover {
-  background-color: #d62839;
+  background-color: #021830;
 }
 
 .submit-btn:disabled {
@@ -229,7 +229,7 @@ export default {
 }
 
 .register-link a {
-  color: #e63946;
+  color: #0e4079;
   text-decoration: none;
   font-weight: bold;
 }

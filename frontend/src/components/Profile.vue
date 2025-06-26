@@ -16,15 +16,9 @@
             Deletar Conta
           </button>
         </div>
-        <div class="stats">
-          <span
-            ><strong>{{ posts.length }}</strong> publicações
-          </span>
-          <span><strong>120</strong> seguidores</span>
-          <span><strong>180</strong> seguindo</span>
-        </div>
       </div>
     </header>
+
     <div v-if="modoEdicao" class="edit-form">
       <input type="text" v-model="usuario.name" placeholder="Novo nome" />
       <input type="email" v-model="usuario.email" placeholder="Novo email" />
@@ -38,19 +32,30 @@
       <p v-if="mensagem">{{ mensagem }}</p>
     </div>
 
-    <main class="posts-grid">
-      <div v-for="post in posts" :key="post.id" class="post-thumb">
-        <img :src="post.imagem" :alt="post.titulo" />
-      </div>
-    </main>
+    <section class="reservas-section">
+      <h3>Minhas Reservas</h3>
+      <div v-if="reservas.length === 0">Nenhuma reserva encontrada.</div>
+      <ul v-else>
+        <li
+          v-for="reserva in reservas"
+          :key="reserva.reservationId"
+          class="reserva-item"
+        >
+          <p>
+            <strong>Carro:</strong> {{ reserva.model }} - {{ reserva.brand }}
+          </p>
+          <p><strong>Data de Início:</strong> {{ reserva.start_date }}</p>
+          <p><strong>Data de Fim:</strong> {{ reserva.end_date }}</p>
+          <p><strong>Valor Total:</strong> R$ {{ reserva.total_price }}</p>
+        </li>
+      </ul>
+    </section>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import img1 from "@/assets/img1.jpg";
-import img2 from "@/assets/img2.jpg";
-import img3 from "@/assets/img4.jpg";
+
 export default {
   name: "ProfileView",
   data() {
@@ -62,36 +67,19 @@ export default {
       },
       modoEdicao: false,
       mensagem: "",
-      posts: [
-        {
-          id: 1,
-          titulo: "Post 1",
-          imagem: img1,
-        },
-        {
-          id: 2,
-          titulo: "Post 2",
-          imagem: img2,
-        },
-        {
-          id: 3,
-          titulo: "Post 3",
-          imagem: img3,
-        },
-      ],
+      reservas: [],
     };
   },
   mounted() {
     this.carregarPerfil();
+    this.carregarReservas();
   },
   methods: {
     async carregarPerfil() {
       try {
         const token = localStorage.getItem("token");
         const res = await axios.get("http://localhost:3000/api/user", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
         this.usuario.name = res.data.name;
         this.usuario.email = res.data.email;
@@ -99,16 +87,24 @@ export default {
         console.error("Erro ao carregar perfil:", erro);
       }
     },
+    async carregarReservas() {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get("http://localhost:3000/api/reservations", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        this.reservas = res.data;
+      } catch (erro) {
+        console.error("Erro ao carregar reservas:", erro);
+      }
+    },
     async atualizarPerfil() {
       try {
         const token = localStorage.getItem("token");
-        const payload = {
-          name: this.usuario.name,
-          email: this.usuario.email,
-        };
+        const payload = { name: this.usuario.name, email: this.usuario.email };
         if (this.usuario.senha) payload.password = this.usuario.senha;
-        console.log("Payload enviado:", payload);
-        await axios.put("/api/user", payload, {
+
+        await axios.put("http://localhost:3000/api/user", payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -125,7 +121,7 @@ export default {
 
       try {
         const token = localStorage.getItem("token");
-        await axios.delete("/api/user", {
+        await axios.delete("http://localhost:3000/api/user", {
           headers: { Authorization: `Bearer ${token}` },
         });
         this.mensagem = "Conta deletada. Redirecionando...";
@@ -150,6 +146,8 @@ export default {
   margin: 0 auto;
   padding: 24px 16px;
   min-height: calc(100vh - 60px);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f7fa;
 }
 
 .perfil-header {
@@ -157,16 +155,20 @@ export default {
   align-items: center;
   gap: 24px;
   margin-bottom: 32px;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .avatar {
-  width: 80px;
-  height: 80px;
-  background-color: #036f7e;
+  width: 100px;
+  height: 100px;
+  background-color: #0e4079;
   border-radius: 50%;
   color: white;
   font-weight: bold;
-  font-size: 32px;
+  font-size: 36px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -185,87 +187,97 @@ export default {
 }
 
 .username {
-  font-size: 20px;
-  color: white;
+  font-size: 26px;
+  color: #333333;
+  font-weight: 600;
 }
 
 .edit-btn,
 .logout-btn,
 .delete-btn {
-  background-color: #df4652;
-  border: 1px solid #dbdbdb;
+  background-color: #0e4079;
+  border: none;
   color: white;
-  border-radius: 4px;
-  padding: 6px 12px;
+  border-radius: 6px;
+  padding: 8px 16px;
   font-size: 14px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.stats {
-  display: flex;
-  gap: 16px;
-  font-size: 14px;
-  color: white;
+.edit-btn:hover,
+.logout-btn:hover,
+.delete-btn:hover {
+  background-color: #08315e;
 }
 
-.posts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 8px;
-}
-
-.post-thumb img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-}
 .edit-form {
-  background-color: #f9f9f9;
+  background-color: #ffffff;
   border: 1px solid #dbdbdb;
   padding: 24px;
-  border-radius: 8px;
+  border-radius: 12px;
   margin-top: 20px;
   max-width: 500px;
-}
-
-.edit-form label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: bold;
-  color: #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .edit-form input {
-  width: 100%;
-  padding: 10px;
+  width: 90%;
+  padding: 12px;
   margin-bottom: 16px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 14px;
 }
 
 .edit-form button {
-  background-color: #3897f0;
+  background-color: #0e4079;
   color: white;
   border: none;
-  padding: 10px 16px;
-  border-radius: 4px;
+  padding: 10px 20px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
   margin-right: 8px;
+  transition: background-color 0.3s;
 }
 
-.edit-form button.cancelar {
-  background-color: #aaa;
+.edit-form button:hover {
+  background-color: #08315e;
 }
+
+.reservas-section {
+  margin-top: 40px;
+}
+
+.reservas-section h3 {
+  font-size: 24px;
+  margin-bottom: 16px;
+  color: #0e4079;
+}
+
+.reserva-item {
+  background-color: #ffffff;
+  border: 1px solid #dbdbdb;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.reserva-item p {
+  margin: 4px 0;
+}
+
 .btn-voltar {
   display: inline-block;
-  margin-bottom: 16px;
-  color: #036f7e;
+  margin-bottom: 24px;
+  color: #0e4079;
   font-weight: bold;
   cursor: pointer;
   text-decoration: none;
 }
+
 .btn-voltar:hover {
   text-decoration: underline;
 }

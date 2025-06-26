@@ -1,4 +1,3 @@
-// userSchema.js
 const userSchema = `
   CREATE TABLE IF NOT EXISTS users (
       userId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
