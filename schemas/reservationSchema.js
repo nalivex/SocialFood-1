@@ -11,7 +11,7 @@ const reservationSchema = `
 
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (car_id) REFERENCES cars(id)
-  );
+  );'
 `;
 
 module.exports = reservationSchema;

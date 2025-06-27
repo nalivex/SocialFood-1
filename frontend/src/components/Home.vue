@@ -2,44 +2,67 @@
   <div class="feed-container">
     <header>
       <h1><span class="logo-font">DriveCar</span></h1>
-      <input
-        type="text"
-        placeholder="Buscar carro por marca ou modelo"
-        v-model="busca"
-        class="search-input"
-      />
       <nav>
-        <router-link to="/profile">Perfil</router-link>
-        <router-link to="/" @click="logout">Sair</router-link>
+        <router-link to="/">Carros</router-link>
+        <router-link to="/">Ofertas</router-link>
+        <router-link to="/">Avaliações</router-link>
       </nav>
     </header>
 
     <main class="feed">
-      <!-- Resultados da busca -->
-      <div v-if="busca && carros.length === 0" class="sem-posts">
-        Nenhum carro encontrado.
-      </div>
+      <h1>Encontre o carro perfeito para sua viagem!</h1>
+      <p>Alugue veículos com conforto e segurança para suas aventuras.</p>
 
-      <div v-else>
-        <div v-for="carro in carros" :key="carro.carId" class="post-card">
-          <div class="post-image-wrapper">
-            <img
-              :src="`http://localhost:3000${carro.image}`"
-              :alt="carro.model"
-              class="post-image"
-            />
+      <section class="search">
+        <input
+          type="text"
+          v-model="searchTerm"
+          @input="buscarCarros"
+          placeholder="Buscar carros por modelo ou marca..."
+          class="search-input"
+        />
+      </section>
+
+      <section>
+        <div v-if="loading" class="loading">Carregando carros...</div>
+
+        <div v-else>
+          <div v-if="cars.length === 0" class="sem-posts">
+            Nenhum carro encontrado.
           </div>
-          <div class="post-body">
-            <div class="caption">
-              <strong>{{ carro.brand }} {{ carro.model }}</strong
-              ><br />
-              Ano: {{ carro.year }}<br />
-              Placa: {{ carro.license_plate }}<br />
-              Preço por dia: R$ {{ carro.daily_price }}
-            </div>
+
+          <div v-else>
+            <router-link
+              v-for="(car, index) in cars"
+              :key="car.carId"
+              :to="`/car/${car.carId}`"
+              class="post-card"
+              style="text-decoration: none; color: inherit"
+            >
+              <div class="post-image-wrapper">
+                <img
+                  :src="
+                    car.image
+                      ? `http://localhost:3000/${car.image}`
+                      : getDefaultImage(index)
+                  "
+                  :alt="car.model"
+                  class="post-image"
+                />
+              </div>
+              <div class="post-body">
+                <div class="caption">
+                  <strong>{{ car.brand }} {{ car.model }}</strong
+                  ><br />
+                  Ano: {{ car.year }}<br />
+                  Placa: {{ car.license_plate }}<br />
+                  Preço por dia: R$ {{ car.daily_price }}
+                </div>
+              </div>
+            </router-link>
           </div>
         </div>
-      </div>
+      </section>
     </main>
   </div>
 </template>
@@ -51,54 +74,42 @@ export default {
   name: "HomeView",
   data() {
     return {
-      busca: "",
-      carros: [],
+      cars: [],
+      loading: false,
+      searchTerm: "",
+      defaultImages: [
+        require("@/assets/img1.jpg"),
+        require("@/assets/img2.jpg"),
+        require("@/assets/img3.jpg"),
+        require("@/assets/img4.jpg"),
+        require("@/assets/img5.jpg"),
+        require("@/assets/img6.jpg"),
+      ],
     };
   },
-  mounted() {
-    this.carregarCarros();
-  },
-  watch: {
-    busca: "buscarCarros",
-  },
   methods: {
-    async carregarCarros() {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:3000/api/cars", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        this.carros = response.data;
-      } catch (error) {
-        console.error("Erro ao carregar carros:", error);
-      }
+    getDefaultImage(index) {
+      return this.defaultImages[index % this.defaultImages.length];
     },
     async buscarCarros() {
-      if (this.busca.trim() === "") {
-        this.carregarCarros();
-        return;
-      }
-
+      this.loading = true;
       try {
-        const response = await axios.get(
-          `http://localhost:3000/api/cars/search?q=${encodeURIComponent(
-            this.busca
-          )}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        this.carros = response.data;
+        let url = "/api/cars";
+        if (this.searchTerm.trim() !== "") {
+          url = `/api/cars/search?q=${encodeURIComponent(this.searchTerm)}`;
+        }
+        const res = await axios.get(url);
+        this.cars = res.data;
       } catch (error) {
         console.error("Erro ao buscar carros:", error);
+        this.cars = [];
+      } finally {
+        this.loading = false;
       }
     },
-    logout() {
-      localStorage.removeItem("token");
-      this.$router.push("/login");
-    },
+  },
+  async created() {
+    await this.buscarCarros();
   },
 };
 </script>
@@ -107,59 +118,52 @@ export default {
 .feed-container {
   background-color: #fafafa;
   min-height: 100vh;
+  padding: 16px;
 }
 
-.topbar {
-  background-color: #fff;
-  border-bottom: 1px solid #dbdbdb;
-  padding: 12px 20px;
+header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  justify-content: space-between;
+  margin-bottom: 2rem;
 }
 
-.search-input {
-  padding: 6px 12px;
-  border-radius: 8px;
-  border: 1px solid #dbdbdb;
-  font-size: 14px;
-  flex: 1 1 200px;
-  max-width: 300px;
-  background-color: #fafafa;
+.logo-font {
+  font-weight: bold;
+  font-size: 2rem;
+  color: #007bff;
 }
 
-.topbar-actions {
-  display: flex;
-  gap: 12px;
+nav a {
+  margin-left: 1rem;
+  text-decoration: none;
+  color: #333;
 }
 
-.profile-btn,
-.logout-btn {
-  background-color: transparent;
-  border: none;
-  color: #ffffff;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 14px;
+nav a.router-link-exact-active {
+  font-weight: bold;
+  color: #007bff;
 }
 
 .feed {
-  margin: 50px auto 0;
   max-width: 1000px;
-  padding: 24px 16px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 16px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 .post-card {
   width: 100%;
-  max-width: 900px;
   background-color: #fff;
   border: 1px solid #dbdbdb;
   border-radius: 6px;
@@ -168,11 +172,16 @@ export default {
   display: flex;
   flex-direction: column;
   margin-bottom: 24px;
+  transition: box-shadow 0.3s ease;
+}
+
+.post-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .post-image-wrapper {
   width: 100%;
-  height: 500px;
+  height: 400px;
   background-color: #efefef;
 }
 
@@ -183,62 +192,22 @@ export default {
   display: block;
 }
 
-.post-header {
-  padding: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .post-body {
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.post-actions {
-  display: flex;
-  gap: 8px;
+  padding: 12px;
 }
 
 .caption {
-  font-size: 12px;
+  font-size: 14px;
   color: #262626;
   text-align: left;
   word-break: break-word;
 }
 
+.loading,
 .sem-posts {
   text-align: center;
-  color: #999;
-  font-size: 16px;
-  margin-top: 20px;
-}
-
-.post-menu {
-  background: transparent;
-  border: none;
-  font-size: 20px;
-  line-height: 1;
-  color: #262626;
-  cursor: pointer;
-  user-select: none;
-}
-
-.usuario-card {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #fff;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  margin-bottom: 8px;
-  transition: background 0.2s ease;
-}
-.usuario-card:hover {
-  background: #f2f2f2;
-  cursor: pointer;
+  color: #666;
+  font-size: 1.2rem;
+  padding: 2rem 0;
 }
 </style>

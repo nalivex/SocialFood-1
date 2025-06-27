@@ -24,6 +24,9 @@
           {{ carro.description || "Sem descrição." }}
         </p>
       </div>
+      <router-link :to="`/api/bookings/${carro.carId}`" class="reserve-button">
+        Reservar este carro
+      </router-link>
     </main>
 
     <div v-else class="loading">Carregando detalhes...</div>
@@ -80,5 +83,19 @@ export default {
   text-align: center;
   font-size: 18px;
   margin-top: 50px;
+}
+.reserve-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #2c3e50;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  margin-top: 1rem;
+  transition: background-color 0.3s;
+}
+
+.reserve-button:hover {
+  background-color: #1a242f;
 }
 </style>

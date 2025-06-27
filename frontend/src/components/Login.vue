@@ -79,7 +79,15 @@ export default {
         });
 
         localStorage.setItem("token", res.data.access_token);
-        this.$router.push("/home");
+
+        // 🔍 Aqui pegamos o redirect da query string
+        const redirect = this.$route.query.redirect;
+
+        if (redirect) {
+          this.$router.push(redirect); // volta pra onde tentou ir
+        } else {
+          this.$router.push("/home"); // login normal
+        }
       } catch (err) {
         this.erro =
           err.response?.data?.error ||
@@ -88,6 +96,12 @@ export default {
         this.loading = false;
       }
     },
+  },
+  mounted() {
+    // Verifica se já está logado e redireciona para a página inicial
+    if (localStorage.getItem("token")) {
+      this.$router.push("/home");
+    }
   },
 };
 </script>
