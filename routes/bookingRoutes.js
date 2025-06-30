@@ -12,13 +12,24 @@ router.post('/api/bookings', authMiddleware, async (req, res) => {
       return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
     }
 
-    const sql = `
+    const sqlInsert = `
       INSERT INTO bookings (user_id, car_id, start_date, end_date, total_price)
       VALUES (?, ?, ?, ?, ?)
     `;
-    await pool.query(sql, [userId, carId, start_date, end_date, total_price]);
 
-    res.status(201).json({ message: 'Reserva realizada com sucesso!' });
+    // Executa a reserva
+    await pool.query(sqlInsert, [userId, carId, start_date, end_date, total_price]);
+
+    console.log("ID do carro a ser atualizado:", carId);
+    // Atualiza o status do carro para 'unavailable'
+    const sqlUpdate = `
+      UPDATE cars
+      SET is_active = 0
+      WHERE carId = ?
+    `;
+    await pool.query(sqlUpdate, [carId]);
+
+    res.status(201).json({ message: 'Reserva realizada e carro marcado como indisponível.' });
   } catch (error) {
     console.error('Erro ao criar reserva:', error);
     res.status(500).json({ message: 'Erro interno ao criar reserva.' });

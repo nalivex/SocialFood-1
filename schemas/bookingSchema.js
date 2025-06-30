@@ -5,6 +5,7 @@ const bookingSchema = `
     car_id INT UNSIGNED NOT NULL,
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
+    total_price DECIMAL(10, 2) NOT NULL,
     status ENUM('active', 'cancelled', 'completed') DEFAULT 'active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     cancelled_at TIMESTAMP NULL DEFAULT NULL,

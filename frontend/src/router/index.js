@@ -27,20 +27,4 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem("token");
-  const isAuthenticated = !!token;
-
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (!isAuthenticated) {
-      return next({
-        path: "/login",
-        query: { redirect: to.fullPath }, // guarda a rota que o usuário tentou acessar
-      });
-    }
-  }
-
-  next();
-});
-
 export default router;
